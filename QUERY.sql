@@ -95,32 +95,34 @@ VALUES
 (505, 3, 102, 'C-20', 'Pending', 120);
 
 
+-- -------------------------------------------------- asked queries ----------------------------------------
 
+-- 1.
 select match_id,fixture, base_ticket_price from Matches
 where tournament_category = 'Champions League' and match_status = 'Available'
 
-
+-- 2.
 select user_id, full_name, email from Users
 where full_name LIKE 'Tanvir%' or full_name ILIKE '%Haque%'
 
-
+-- 3.
 select booking_id,user_id,match_id, COALESCE(payment_status, 'Action Required') as systematic_status from Bookings
 where payment_status is NULL
 
-
+-- 4.
 select booking_id, full_name, fixture, total_cost from Bookings
 inner join Users using(user_id)
 inner join Matches using(match_id)
 
-
+-- 5.
 select user_id, full_name, booking_id from Users
 left join Bookings using(user_id)
 
-
+-- 6.
 select booking_id, match_id, total_cost from Bookings
 where total_cost > (select avg(total_cost) from Bookings)
 
-
+-- 7.
 select * from Matches
 where base_ticket_price != (select max(base_ticket_price) from Matches)
 order by base_ticket_price desc limit 2
