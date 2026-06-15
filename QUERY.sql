@@ -1,10 +1,10 @@
 
-DROP TABLE IF EXISTS bookings;
-DROP TABLE IF EXISTS matches;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS Bookings;
+DROP TABLE IF EXISTS Matches;
+DROP TABLE IF EXISTS Users;
 
 
-CREATE TABLE users (
+CREATE TABLE Users (
     user_id INT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE users (
     phone_number VARCHAR(20)
 );
 
-CREATE TABLE matches (
+CREATE TABLE Matches (
     match_id INT PRIMARY KEY,
     fixture VARCHAR(100) NOT NULL,
     tournament_category VARCHAR(50) NOT NULL,
@@ -31,10 +31,10 @@ CREATE TABLE matches (
 );
 
 
-CREATE TABLE bookings (
+CREATE TABLE Bookings (
     booking_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users(user_id),
-    match_id INT NOT NULL REFERENCES matches(match_id),
+    user_id INT NOT NULL REFERENCES Users(user_id),
+    match_id INT NOT NULL REFERENCES Matches(match_id),
     seat_number VARCHAR(20),
     payment_status VARCHAR(20) 
         CHECK (
@@ -50,7 +50,7 @@ CREATE TABLE bookings (
 
 
 
-INSERT INTO users (
+INSERT INTO Users (
     user_id,
     full_name,
     email,
@@ -64,7 +64,7 @@ VALUES
 (4, 'Jannat Ara', 'jannat@mail.com', 'Football Fan', NULL);
 
 
-INSERT INTO matches (
+INSERT INTO Matches (
     match_id,
     fixture,
     tournament_category,
@@ -79,7 +79,7 @@ VALUES
 (105, 'Juventus vs Roma', 'Serie A', 80, 'Available');
 
 
-INSERT INTO bookings (
+INSERT INTO Bookings (
     booking_id,
     user_id,
     match_id,
@@ -96,31 +96,31 @@ VALUES
 
 
 
-select match_id,fixture, base_ticket_price from matches
+select match_id,fixture, base_ticket_price from Matches
 where tournament_category = 'Champions League' and match_status = 'Available'
 
 
-select user_id, full_name, email from users
+select user_id, full_name, email from Users
 where full_name LIKE 'Tanvir%' or full_name ILIKE '%Haque%'
 
 
-select booking_id,user_id,match_id, COALESCE(payment_status, 'Action Required') as systematic_status from bookings
+select booking_id,user_id,match_id, COALESCE(payment_status, 'Action Required') as systematic_status from Bookings
 where payment_status is NULL
 
 
-select booking_id, full_name, fixture, total_cost from bookings
-inner join users using(user_id)
-inner join matches using(match_id)
+select booking_id, full_name, fixture, total_cost from Bookings
+inner join Users using(user_id)
+inner join Matches using(match_id)
 
 
-select user_id, full_name, booking_id from users
-left join bookings using(user_id)
+select user_id, full_name, booking_id from Users
+left join Bookings using(user_id)
 
 
-select booking_id, match_id, total_cost from bookings
-where total_cost > (select avg(total_cost) from bookings)
+select booking_id, match_id, total_cost from Bookings
+where total_cost > (select avg(total_cost) from Bookings)
 
 
-select * from matches
-where base_ticket_price != (select max(base_ticket_price) from matches)
+select * from Matches
+where base_ticket_price != (select max(base_ticket_price) from Matches)
 order by base_ticket_price desc limit 2
